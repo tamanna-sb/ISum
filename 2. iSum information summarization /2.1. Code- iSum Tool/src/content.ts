@@ -477,16 +477,27 @@ scales:{
     } chart.update()
 
     pieCanvas.onclick = (e) => {
-    const slice = chart.getElementsAtEventForMode(e, 'nearest', {intersect: true}, true)[0]
-    let ind=informationTypes[slice.index]
-    //$('p').html(ind);
-    if(Issue_page){
-    var pNodes = document.getElementsByTagName('p');
-    for (var i=0, length=pNodes.length; i < length; i++) {
-            pNodes[i].innerHTML = pNodes[i].innerHTML.replaceAll('<span style="background-color:#FFCCCB">','');
-            pNodes[i].innerHTML = pNodes[i].innerHTML.replaceAll('<\span>','');
-          }
+    const slice = chart.getElementsAtEventForMode(e, 'nearest', {intersect: true}, true)[0];
+    const infoType = informationTypes[slice.index];  
+    const color = color_options[slice.index % color_options.length];
+  
+    // Clear previous highlights
+    if(Issue_page) {
+        const pNodes = document.getElementsByTagName('p');
+    for(let p of pNodes) {
+      p.innerHTML = p.innerHTML.replaceAll(/<span style="background-color:[^"]*"><\/span>/gi, '');
+        }
+      }
+  
+    if(Issue_page) {
+    const pNodes = document.getElementsByTagName('p');
+    const regex = new RegExp(infoType, 'gi');
+    for(let p of pNodes) {
+      p.innerHTML = p.innerHTML.replace(regex, `<span style="background-color:${color}">$&</span>`);
+        }
+      }
 
+            
     let summaryHeaderHolder = document.getElementById('summaryHeader')
     summaryHeaderHolder.innerHTML='Summary - '+ind
 
